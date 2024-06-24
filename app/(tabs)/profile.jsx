@@ -3,16 +3,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Image, FlatList, TouchableOpacity } from "react-native";
 
 import useAppwrite from "../../lib/useAppwrite";
-import { getUserPosts, signOut } from "../../lib/appwrite";
+import { getUserManifests, getUserManifestsCurrentMonth, signOut } from "../../lib/appwrite";
 import { useGlobalContext } from "../../context/GlobalProvider";
 import EmptyState from "../../components/EmptyState";
 import InfoBox from "../../components/InfoBox";
-import VideoCard from "../../components/VideoCard";
+import ManifestCard from "../../components/ManifestCard";
 import { icons } from "../../constants";
 
 const Profile = () => {
   const { user, setUser, setIsLogged } = useGlobalContext();
-  const { data: posts } = useAppwrite(() => getUserPosts(user.$id));
+  const { data: manifests } = useAppwrite(() => getUserManifestsCurrentMonth(user.$id));
 
   const logout = async () => {
     await signOut();
@@ -25,13 +25,9 @@ const Profile = () => {
   return (
     <SafeAreaView className="bg-primary h-full">
       <FlatList
-        data={posts}
+        data={manifests}
         keyExtractor={(item) => item.$id}
-        renderItem={({ item }) => (
-          <VideoCard
-            video={item}
-          />
-        )}
+        renderItem={({ item }) => <ManifestCard manifest={item} />}
         ListEmptyComponent={() => (
           <EmptyState
             title="No Videos Found"
@@ -65,17 +61,42 @@ const Profile = () => {
               titleStyles="text-lg"
             />
 
-            <View className="mt-5 flex flex-row">
+            <InfoBox
+              title={manifests.currentMonthName}
+              containerStyles="mt-5"
+              titleStyles="text-lg"
+            />
+
+            <View className="mt-5 flex flex-row ">
               <InfoBox
-                title={posts.length || 0}
-                subtitle="Posts"
+                title={manifests.manifestCount || 0}
+                subtitle="Manifests"
                 titleStyles="text-xl"
                 containerStyles="mr-10"
               />
               <InfoBox
-                title="1.2k"
-                subtitle="Followers"
+                title={manifests.expenses || 0}
+                subtitle="Expenses"
                 titleStyles="text-xl"
+                containerStyles="mr-10"
+              />
+              <InfoBox
+                title={manifests.expenses}
+                subtitle="Hours"
+                titleStyles="text-xl"
+              />
+            </View>
+            <View className="mt-5 flex flex-row">
+              <InfoBox
+                title={manifests.kmTotal}
+                subtitle="Kilometers"
+                titleStyles="text-xl"
+              />
+              <InfoBox
+                title={manifests.totalPackages}
+                subtitle="Packages"
+                titleStyles="text-xl"
+                containerStyles="mr-10"
               />
             </View>
           </View>

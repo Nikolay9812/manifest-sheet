@@ -4,13 +4,13 @@ import { View, Text, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import SearchInput from "../../components/SearchInput";
-import VideoCard from "../../components/VideoCard";
+import ManifestCard from "../../components/ManifestCard";
 import EmptyState from "../../components/EmptyState";
 import useAppwrite from "../../lib/useAppwrite";
-import { searchPosts } from "../../lib/appwrite";
+import { searchManifests } from "../../lib/appwrite";
 const Search = () => {
   const { query } = useLocalSearchParams();
-  const { data: posts, refetch } = useAppwrite(() => searchPosts(query));
+  const { data: manifests, refetch } = useAppwrite(() => searchManifests(query));
 
   useEffect(() => {
     refetch();
@@ -19,10 +19,10 @@ const Search = () => {
   return (
     <SafeAreaView className="bg-primary h-full">
       <FlatList
-        data={posts}
+        data={manifests}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
-          <VideoCard
+          <ManifestCard
             video={item}
           />
         )}

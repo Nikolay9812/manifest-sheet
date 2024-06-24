@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, ScrollView, Alert } from "react-native";
 import { useGlobalContext } from "../../context/GlobalProvider";
-import { createManifestPost } from "../../lib/appwrite";
+import { manifest } from "../../lib/appwrite";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../../components/CustomButton";
 import FormField from "../../components/FormField";
@@ -50,7 +50,7 @@ const CreateManifest = () => {
     setUploading(true);
 
     try {
-      await createManifestPost({
+      await manifest({
         ...form,
         userId: user.$id,
         kmStart: parseInt(form.kmStart, 10),
