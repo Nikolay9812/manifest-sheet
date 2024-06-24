@@ -6,6 +6,26 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../../components/CustomButton";
 import FormField from "../../components/FormField";
 import { router } from "expo-router";
+
+function parseTimeStringToDate(timeString) {
+  // Split the time string into hours, minutes, and period (AM/PM)
+  const [time, period] = timeString.split(" ");
+  const [hours, minutes] = time.split(":").map((num) => parseInt(num, 10));
+
+  // Convert hours based on AM/PM period
+  let adjustedHours = hours;
+  if (period === "PM" && hours !== 12) {
+    adjustedHours += 12;
+  } else if (period === "AM" && hours === 12) {
+    adjustedHours = 0; // Midnight hour
+  }
+
+  // Create Date object with current date and parsed time
+  const currentDate = new Date();
+  currentDate.setHours(adjustedHours, minutes, 0, 0);
+  return currentDate;
+}
+
 const CreateManifest = () => {
   const { user } = useGlobalContext();
   const [uploading, setUploading] = useState(false);
@@ -33,6 +53,16 @@ const CreateManifest = () => {
       await createManifestPost({
         ...form,
         userId: user.$id,
+        kmStart: parseInt(form.kmStart, 10),
+        kmEnd: parseInt(form.kmEnd, 10),
+        packages: parseInt(form.packages, 10),
+        returnedPackages: parseInt(form.returnedPackages, 10),
+        startTime:parseTimeStringToDate(form.startTime),
+        departure:parseTimeStringToDate(form.departure),
+        firstDelivery:parseTimeStringToDate(form.firstDelivery),
+        lastDelivery:parseTimeStringToDate(form.lastDelivery),
+        returnTime:parseTimeStringToDate(form.returnTime),
+        endTime:parseTimeStringToDate(form.endTime),
       });
       Alert.alert("Success", "Manifest uploaded successfully");
       router.push("/home");

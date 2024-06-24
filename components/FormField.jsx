@@ -24,6 +24,7 @@ const FormField = ({
       setShowPicker(false);
     }
   };
+  
 
   return (
     <View className={`space-y-2 ${otherStyles}`}>
